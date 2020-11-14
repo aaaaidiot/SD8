@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SD8</string>
+    <string name="tittle">SD8プロジェクト（仮）</string>
+    <string name="japanese">口頭試問</string>
+    <string name="jiji">時事問題</string>
+    <string name="test">テスト用</string>
+    <string name="mondai1">問題１</string>
+    <string name="text">ここに問題が出ます</string>
+    <string name="hint_input">こちらに入力</string>
+    <string name="send">送信</string>
+    <string name="save">保存</string>
+    <string name="show">これまでのデータを見る</string>
+</resources>

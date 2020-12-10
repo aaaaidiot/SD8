@@ -5,9 +5,23 @@
     <string name="jiji">時事問題</string>
     <string name="test">テスト用</string>
     <string name="mondai1">問題１</string>
-    <string name="text">ここに問題が出ます</string>
+    <string name="text">バイデン政権誕生によって日本にどのような影響を与えますか？</string>
     <string name="hint_input">こちらに入力</string>
     <string name="send">送信</string>
-    <string name="save">保存</string>
+    <string name="save">データを保存</string>
     <string name="show">これまでのデータを見る</string>
+    <string name="cloud">分析結果を見る</string>
+    <string name="bpost">文書を送る</string>
+    <string name="delete">データの削除</string>
+    <string name="buck">問題選択画面に戻る</string>
+    <!--クイズ画面-->
+    <string name="question_label">問題文</string>
+    <string name="count_label">Q%d</string>
+    <string name="answer_btn">選択肢</string>
+    <!--結果画面-->
+    <string name="result_title">結果</string>
+    <string name="result_score">%d / 5</string>
+    <string name="btn_return">戻る</string>
+    <string name="mondaise">問題を選んでください</string>
+    <string name="home">タイトル画面に戻る</string>
 </resources>

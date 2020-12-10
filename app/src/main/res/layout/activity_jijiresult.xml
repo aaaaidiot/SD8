@@ -6,39 +6,74 @@
     android:layout_height="match_parent"
     tools:context=".jijiresult">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Jijiresult"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#C8BFBF">
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="158dp"
+        android:layout_height="82dp"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="47dp"
+        android:layout_marginEnd="136dp"
+        android:layout_marginBottom="481dp"
         android:text="結果"
-        android:textSize="70sp"
-        tools:layout_editor_absoluteX="135dp"
-        tools:layout_editor_absoluteY="47dp" />
+        android:textSize="60dp"
+        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.363" />
 
     <TextView
         android:id="@+id/resultLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="3 / 10"
-        android:textSize="100sp"
-        tools:layout_editor_absoluteX="75dp"
-        tools:layout_editor_absoluteY="234dp" />
+        android:layout_marginStart="205dp"
+        android:layout_marginTop="231dp"
+        android:layout_marginEnd="206dp"
+        android:layout_marginBottom="367dp"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/totalScoreLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="トータルスコア : 333"
-        android:textSize="35sp"
-        tools:layout_editor_absoluteX="40dp"
-        tools:layout_editor_absoluteY="506dp" />
+        android:layout_marginStart="205dp"
+        android:layout_marginEnd="206dp"
+        android:layout_marginBottom="178dp"
+        android:textSize="45dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
+        android:id="@+id/button3"
         android:layout_width="140dp"
         android:layout_height="60dp"
+        android:layout_marginStart="135dp"
+        android:layout_marginEnd="136dp"
+        android:layout_marginBottom="50dp"
         android:onClick="returnTop"
         android:text="もどる"
         android:textSize="18sp"
-        tools:layout_editor_absoluteX="135dp"
-        tools:layout_editor_absoluteY="621dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

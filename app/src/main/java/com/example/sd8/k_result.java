@@ -1,38 +1,40 @@
 package com.example.sd8;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
-import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 
 import java.util.ArrayList;
 import java.util.List;
-import android.util.Log;
-import com.atilika.kuromoji.TokenizerBase;
-import com.atilika.kuromoji.ipadic.Token;
-import com.atilika.kuromoji.ipadic.Tokenizer;
 
 public class k_result extends AppCompatActivity {
 
+    private UploadTask task;
     private saveDBHelper helper;
     private SQLiteDatabase db;
-    private TextView show;
+    private TextView tv;
+    private  TextView timeshow;
+    private  String sec;
 
-    String str1 = "吾輩";
-    String str2 = "猫";
-    int ten = 0;
+
 
     Button btnSave;
     Button btnShow;
+    Button btnPost;
+    Button btnBuck;
 
 
     @Override
@@ -40,36 +42,71 @@ public class k_result extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_k_result);
         TextView text = (TextView) findViewById(R.id.textcatch);
-        TextView result = (TextView) findViewById(R.id.maining);
+        timeshow = findViewById(R.id.time);
+
 
         btnSave = findViewById(R.id.save);
         btnShow = findViewById(R.id.show);
+        btnPost = findViewById(R.id.bpost);
+        btnBuck = findViewById(R.id.buck);
+
+        final String url = "http://10.0.2.2/k_result.php";
 
 
         // インテントを取得
         Intent intent = getIntent();        // インテントに保存されたデータを取得
         final String data = intent.getStringExtra("keyword");
+        final String ti = intent.getStringExtra("time");
         text.setText(data);
 
-
-        if (data.indexOf(str1) != -1) {
-            ten = ten + 1;
-        }
-        if (data.indexOf(str2) != -1) {
-            ten = ten + 1;
-        }
-        final String goukei = String.valueOf(ten);
-        result.setText(goukei + "点です。");
+        //タイマーの処理
+        int time = Integer.valueOf(ti).intValue();
+        int min = 0;
+        min = (time % 3600) / 60;
+        time = time % 60;
+        timeshow.setText(String.valueOf(min) + "分" + String.valueOf(time) + "秒" + "かかりました。");
+        sec = String.valueOf(time);
 
 
-        final Tokenizer tokenizer = new Tokenizer.Builder().mode(TokenizerBase.Mode.NORMAL).build();
-        List<Token> list = tokenizer.tokenize(data);
-        for (Token token : list) {
-            Log.v("AddMessage : ", token.getAllFeatures());
-        }
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //非同期処理
+                String param0 = data;
+
+                if (param0.length() != 0) {
+                    task = new UploadTask();
+                    task.setListener(createListener());
+                    task.execute(param0);
+                }
+            }
+        });
+
+        //ブラウザ起動
+        Button browser = findViewById(R.id.browser);
+        browser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // phpで作成されたhtmlファイルへアクセス
+                Uri uri = Uri.parse(url);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+
+                // text clear
+                tv.setText("");
+            }
+        });
+
+        tv = findViewById(R.id.post);
+
+
+        //保存ボタンが押されたらDBに保存
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Toast toast = Toast.makeText(k_result.this, "保存しました。", Toast.LENGTH_LONG);
+                toast.show();
 
                 if (helper == null) {
                     helper = new saveDBHelper(getApplicationContext());
@@ -81,45 +118,48 @@ public class k_result extends AppCompatActivity {
 
                 ContentValues values = new ContentValues();
                 values.put(saveDB.FeedEntry.COLUMN_NAME_WORD, data);
-                values.put(saveDB.FeedEntry.COLUMN_NAME_TENSU, goukei);
+                values.put(saveDB.FeedEntry.COLUMN_NAME_TENSU, sec);
                 long newRowId = db.insert(saveDB.FeedEntry.TABLE_NAME, null, values);
                 Log.d("newRowId", Long.toString(newRowId));
             }
         });
+
+        //これまでのデータを見るボタンが押されたら
         btnShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readData();
+                //readDataに飛ぶ
+                Intent intent = new Intent(k_result.this, readData.class);
+                startActivity(intent);
+            }
+        });
+
+        btnBuck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(k_result.this, japanese.class);
+                startActivity(intent);
             }
         });
     }
 
-    private void readData() {
-        if (helper == null) {
-            helper = new saveDBHelper(getApplicationContext());
-        }
-
-        if (db == null) {
-            db = helper.getWritableDatabase();
-        }
-        Cursor c = db.query(saveDB.FeedEntry.TABLE_NAME,
-                new String[]{
-                        saveDB.FeedEntry._ID,
-                        saveDB.FeedEntry.COLUMN_NAME_WORD,
-                        saveDB.FeedEntry.COLUMN_NAME_TENSU,
-                },
-                "",
-                new String[0],
-                "",
-                "",
-                "");
-        List<String> records = new ArrayList<>();
-        while (c.moveToNext()) {
-            String record =c.getString(0)  + "," +  c.getString(1) +"," +c.getString(2)  + "点" + "\r\n";
-            records.add(record);
-        }
-        ListView listView = (ListView) findViewById(R.id.dblist);
-        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, records));
+    //POSTされたか表示される
+    @Override
+    protected void onDestroy() {
+        task.setListener(null);
+        super.onDestroy();
     }
+
+    private UploadTask.Listener createListener() {
+
+        return new UploadTask.Listener() {
+            @Override
+            public void onSuccess(String result) {
+                Toast t = Toast.makeText(k_result.this, result, Toast.LENGTH_LONG);
+                t.show();
+            }
+        };
+    }
+
 }
 
